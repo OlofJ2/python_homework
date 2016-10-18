@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#Exercise 4 by Olof Jönsson
+
 
 import os
 import pandas as pd
@@ -9,6 +13,9 @@ class Song(object):
     '''Describes musical songs'''
     def __init__(self,title,artist,duration): #constructor
         def duration_check(self,duration):
+            '''Tests if duration is a positive number that can be converterted to int. 
+            Sets the duration to 0 if not a number, rasies excpetion if negative. 
+            '''
             try: 
                 int(duration)
             except ValueError:
@@ -17,12 +24,14 @@ class Song(object):
             else:
                 duration=int(duration)          
             if duration<0:
-                raise Exception("APA")
+                raise Exception("Negative_Number")
             return duration        
         self.title=title
         self.artist=artist
         self.duration=duration_check(self,duration)
     def play(self):
+        '''Opens the default webrowser and searches youtube for the artist and title
+        '''
         webbrowser.open("https://www.youtube.com/results?search_query={0} {1}".format(self.title,self.artist))
         print 'playing "{0}" by "{1}"'.format(self.title,self.artist)
     def pretty_duration(self):
@@ -32,17 +41,19 @@ class Song(object):
         h, m = divmod(m, 60)
         return '{0} h: {1} min {2} s'.format(h,m,s)
     def print_all_info(self):
+        '''Prints all attributes and their values
+        '''
         print ',\t'.join("%s: %s" % item for item in self.__dict__.items()) #use the __dict__ command to print all attributes
 
 in_path='{0}/lulu_mix_16.csv'.format(os.environ['HOME'])
-if not os.path.exists(in_path):
+if not os.path.exists(in_path): #test if the file exixts
     raise Exception('No file called {0}.'.format(in_path))
 
 song_frame=pd.read_csv(in_path,header=0,infer_datetime_format=False)
 songs=[]
 for index,row in song_frame.iterrows():
     print row['Name'],row['Artist'],row['Duration']
-    try :
+    try : #tries to add the song
         songs.append(Song(row['Name'],row['Artist'],row['Duration']))
     except Exception:
         print "{0} is a negative number, can't add {1} by {2}".format(row['Duration'],row['Name'],row['Artist'])
